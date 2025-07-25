@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         ChatGPT 對話紀錄匯出工具 (下載TXT版)
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  在 ChatGPT 頁面右下角新增一個「匯出」按鈕，一鍵將對話內容儲存成 .txt 檔案。
 // @author       You (Based on your provided code)
-// @match        https://chat.openai.com/*
+// @match        https://chatgpt.com/*
 // @icon         https://chat.openai.com/favicon.ico
 // @grant        none
 // ==/UserScript==
