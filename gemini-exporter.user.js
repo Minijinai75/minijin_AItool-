@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Gemini 對話紀錄匯出工具 (下載TXT版)
 // @namespace    http://tampermonkey.net/
-// @version      1.3
-// @description  在 Gemini 頁面右下角新增一個「匯出」按鈕，一鍵將對話內容儲存成 .txt 檔案。
+// @version      1.4
+// @description  在 Gemini 頁面右下角新增一個「匯出」按鈕，一鍵將對話內容以指定格式儲存成 .txt 檔案。
 // @author       You (Based on your provided code)
 // @match        https://gemini.google.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=gemini.google.com
@@ -12,22 +12,15 @@
 (function() {
     'use strict';
 
-    // --- 新增功能：將文字內容作為檔案下載 ---
+    // --- 功能：將文字內容作為檔案下載 ---
     function downloadAsTxt(text, filename) {
-        // 建立一個 Blob 物件 (可以想像成一個暫時的檔案)
         const blob = new Blob([text], { type: 'text/plain;charset=utf-8;' });
-        // 建立一個隱藏的下載連結
         const link = document.createElement("a");
-        // 為這個暫時的檔案建立一個 URL
         const url = URL.createObjectURL(blob);
         link.href = url;
-        // 設定下載的檔名
         link.download = filename;
-        // 將連結加到頁面上 (這是為了相容 Firefox)
         document.body.appendChild(link);
-        // 模擬點擊連結來觸發下載
         link.click();
-        // 清理用過的連結和 URL，釋放記憶體
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
     }
@@ -35,6 +28,8 @@
     // --- 核心的匯出邏輯 ---
     function exportConversation() {
         let result = { "final_content": "", "auto_filename": "" };
+        
+        // --- 1. 提取 Gem 的名稱和對話標題 (與您提供的邏輯相同) ---
         let gemName = "Gemini";
         const firstModelNameElement = document.querySelector('.bot-name-text');
         if (firstModelNameElement) { gemName = firstModelNameElement.innerText.trim(); }
@@ -48,22 +43,32 @@
             title = `對話紀錄_${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
         }
 
+        // --- 2. 自動組合檔名 (與您提供的邏輯相同) ---
         result.auto_filename = `${gemName}-${title}.txt`;
+
+        // --- 3. 提取並格式化對話內容 (已修正) ---
         const turns = document.querySelectorAll('.conversation-container');
         let conversationText = "";
         turns.forEach(turn => {
             const userQueryElement = turn.querySelector('user-query .query-text');
-            if (userQueryElement) { conversationText += "你：\n" + userQueryElement.innerText.trim() + "\n\n"; }
+            if (userQueryElement) {
+                conversationText += "你：\n" + userQueryElement.innerText.trim() + "\n\n";
+            }
+
             const modelResponseElement = turn.querySelector('model-response .markdown');
             const modelNameElement = turn.querySelector('model-response .bot-name-text');
+            
             if (modelResponseElement) {
-                const modelNameInText = modelNameElement ? `${modelNameElement.innerText.trim()}` : gemName;
+                // 已修正：套用您指定的 (GEMINI) 格式
+                const modelNameInText = modelNameElement ? `${modelNameElement.innerText.trim()}(GEMINI)` : "Gemini";
                 conversationText += modelNameInText + "：\n" + modelResponseElement.innerText.trim() + "\n\n";
                 conversationText += "--------------------\n\n";
             }
         });
 
-        result.final_content = `標題: ${title}\nGEM: ${gemName}\n\n${conversationText}`;
+        // --- 4. 組合最終的檔案內容 (已修正) ---
+        // 已修正：套用您指定的 `檔名\n\n對話` 格式
+        result.final_content = `${gemName}-${title}\n\n${conversationText}`;
 
         // 如果有內容，就觸發下載，否則跳出提示
         if (conversationText.trim() !== "") {
@@ -73,7 +78,7 @@
         }
     }
 
-    // --- 在頁面上建立並顯示一個按鈕 (與之前相同) ---
+    // --- 在頁面上建立並顯示一個按鈕 ---
     function addButtonToPage() {
         if (document.getElementById('gemini-export-button')) return;
         const exportButton = document.createElement('button');
@@ -97,7 +102,7 @@
         document.body.appendChild(exportButton);
     }
 
-    // 定時器確保按鈕能被成功加上 (與之前相同)
+    // 定時器確保按鈕能被成功加上
     setInterval(addButtonToPage, 1000);
 
 })();
