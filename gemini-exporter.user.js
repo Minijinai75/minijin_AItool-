@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         Gemini 對話紀錄匯出工具
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  一鍵擷取並格式化 Google Gemini 網頁版的對話內容，並複製到剪貼簿。
 // @author       You (Based on your provided code)
-// @match        https://gemini.google.com/app/*
+// @match        https://gemini.google.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=gemini.google.com
 // @grant        GM_setClipboard
 // @grant        GM_registerMenuCommand
