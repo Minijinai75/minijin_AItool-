@@ -73,7 +73,7 @@
                 }
 
                 if (contentText) {
-                    let speaker = (role === 'user') ? "## 🗣️ 你:\n" : "## 🤖 ChatGPT:\n";
+                    let speaker = (role === 'user') ? "## 你:\n" : "## ChatGPT:\n";
                     conversationBody += speaker + contentText + "\n\n---\n\n";
                 }
             });
