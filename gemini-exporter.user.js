@@ -63,7 +63,7 @@
             }
         });
 
-        result.final_content = `標題: ${title}\n模型: ${gemName}\n\n${conversationText}`;
+        result.final_content = `標題: ${title}\nGEM: ${gemName}\n\n${conversationText}`;
 
         // 如果有內容，就觸發下載，否則跳出提示
         if (conversationText.trim() !== "") {
